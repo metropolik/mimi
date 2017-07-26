@@ -9,7 +9,9 @@ class View(object):
 	def __init__(self, ren, win_width, win_height):
 		super(View, self).__init__()		
 		self.width = win_width
-		self.height = win_height		
+		self.height = win_height
+		self.win_width = win_width
+		self.win_height = win_height
 
 		self.elementsInView = []
 
@@ -31,21 +33,25 @@ class View(object):
 		self.calcTilesInView()
 		self.calcViewMatrix()
 
-	def calcViewMatrix(self):
+	def calcViewMatrix(self):		
+		print "zoomFactor", self.zoomFactor, "width", self.width, "height", self.height
+		self.width = self.win_width * (1.0/self.zoomFactor)
+		self.height = self.win_height * (1.0/self.zoomFactor)
 		self.viewMatrix = [[self.zoomFactor, 0.0, -self.x],
 							[0.0, self.zoomFactor, -self.y],
 							[0.0, 0.0, 1.0]]
 
-	def worldToWindowTransform(self, point):
-		#point = list(point) if type(point) is tuple else point
+	def worldToWindowTransform(self, point):		
 		return dot(self.viewMatrix, point + [1.0]).tolist()[:-1]
 
 	def worldToWindowTransformRect(self, rect):
 		pa, pb = rect[:2], rect[2:] #pb is width and height
-		pb[0], pb[1] = pb[0] + pa[0], pb[1] + pa[1] #make pb absolute
+		#make pb absolute
+		pb[0], pb[1] = pb[0] + pa[0], pb[1] + pa[1]
 		pa = self.worldToWindowTransform(pa)
 		pb = self.worldToWindowTransform(pb) #transform
-		pb[0], pb[1] = pb[0] - pa[0], pb[1] - pa[1] #make pb rel. again
+		#make pb rel. again
+		pb[0], pb[1] = pb[0] - pa[0], pb[1] - pa[1]
 		return pa + pb
 
 	def findClosestMultiple(self, x, b):
@@ -54,9 +60,11 @@ class View(object):
 	def calcTilesInView(self):
 		del self.tilesInView[:]
 		#calc upper left corner that is in view
-		xul = self.findClosestMultiple(self.x, self.bgTileWidth)
+		xul = self.findClosestMultiple(self.x, 
+			self.bgTileWidth)
 		xul = xul if xul >= self.x else xul + self.bgTileWidth
-		yul = self.findClosestMultiple(self.y, self.bgTileHeight)
+		yul = self.findClosestMultiple(self.y, 
+			self.bgTileHeight)
 		yul = yul if yul >= self.y else yul + self.bgTileHeight
 
 		#instead use upper left corner that is not in view
@@ -78,6 +86,16 @@ class View(object):
 		print "tiles to render: ", len(self.tilesInView)
 
 	@property
+	def zoomFactor(self):
+		return self._zoomFactor
+
+	@zoomFactor.setter
+	def zoomFactor(self, val):
+		self._zoomFactor = val
+		if hasattr(self, "x"):
+			self.updateView()
+
+	@property
 	def x(self):
 		return self._x
 
@@ -85,7 +103,9 @@ class View(object):
 	def y(self):
 		return self._y
 
-	@x.setter #only y causes update since x and y are always set together
+	#only y causes update 
+	#since x and y are always set together
+	@x.setter
 	def x(self, val): #hopefully
 		self._x = val
 
@@ -103,7 +123,7 @@ class View(object):
 		for x, y in self.tilesInView:
 			dst = self.worldToWindowTransformRect([x, y,
 				self.bgTileWidth, self.bgTileHeight])
-			dst = list(map(lambda x: int(x), dst))
+			dst = list(map(lambda x: int(round(x, 0)), dst))
 			self.drawTileAt(ren, dst)
 
 		

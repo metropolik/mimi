@@ -4,8 +4,8 @@ from sdl2.rect import SDL_Rect
 from sdl2.timer import SDL_Delay, SDL_GetTicks
 from View import View
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 800
 
 class App(object):
 	"""docstring for App"""
@@ -14,7 +14,7 @@ class App(object):
 		self.running = True
 
 		sdl2.ext.init()
-		self.win = sdl2.ext.Window("Mimi", 
+		self.win = sdl2.ext.Window("Lolololol", 
 			size=(WINDOW_WIDTH, WINDOW_HEIGHT))
 		self.win.show()
 		self.ren = sdl2.ext.Renderer(self.win)		
@@ -68,9 +68,14 @@ class App(object):
 				if event.button.button == SDL_BUTTON_MIDDLE:
 					self.oldMousePos = (event.button.x, event.button.y)				
 					self.middleMouseDown = True
-			elif event.type == SDL_MOUSEBUTTONUP:
+
+			elif event.type == SDL_MOUSEBUTTONUP:				
 				if event.button.button == SDL_BUTTON_MIDDLE:					
 					self.middleMouseDown = False
+
+			elif event.type == SDL_MOUSEWHEEL:
+				motion = event.wheel.y * 0.025
+				self.view.zoomFactor += motion		
 
 	def handleRendering(self):
 		self.ren.clear(color = self.pink)
