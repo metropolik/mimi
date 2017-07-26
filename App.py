@@ -15,7 +15,8 @@ class App(object):
 
 		sdl2.ext.init()
 		self.win = sdl2.ext.Window("Lolololol", 
-			size=(WINDOW_WIDTH, WINDOW_HEIGHT))
+			size=(WINDOW_WIDTH, WINDOW_HEIGHT),
+			flags=(SDL_WINDOW_RESIZABLE))
 		self.win.show()
 		self.ren = sdl2.ext.Renderer(self.win)		
 		self.renderObj = []

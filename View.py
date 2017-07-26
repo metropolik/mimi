@@ -30,11 +30,10 @@ class View(object):
 		self.x, self.y = 0, 0 #causes updateView			
 
 	def updateView(self):
-		self.calcTilesInView()
 		self.calcViewMatrix()
+		self.calcTilesInView()
 
-	def calcViewMatrix(self):		
-		print "zoomFactor", self.zoomFactor, "width", self.width, "height", self.height
+	def calcViewMatrix(self):
 		self.width = self.win_width * (1.0/self.zoomFactor)
 		self.height = self.win_height * (1.0/self.zoomFactor)
 		self.viewMatrix = [[self.zoomFactor, 0.0, -self.x * self.zoomFactor],
@@ -68,17 +67,14 @@ class View(object):
 		
 		#add all other corners that are in view
 		cx = xul
-		cy = yul
-		it = 0
+		cy = yul		
 		while self.x + self.width > cx:
 			while self.y + self.height > cy:
 				corner = [cx, cy]
 				self.tilesInView.append(corner)			
 				cy += self.bgTileHeight
 			cx += self.bgTileWidth
-			cy = yul
-			it += 1
-		print "xul", xul, "yul", yul
+			cy = yul				
 		print "tiles to render: ", len(self.tilesInView)
 
 	@property
