@@ -41,9 +41,12 @@ class View(object):
 		return dot(self.viewMatrix, point + [1.0]).tolist()[:-1]
 
 	def worldToWindowTransformRect(self, rect):
-		pa, pb = rect[:2], rect[2:]
-		return worldToWindowTransform(pa) + \
-				 worldToWindowTransform(pb)
+		pa, pb = rect[:2], rect[2:] #pb is width and height
+		pb[0], pb[1] = pb[0] + pa[0], pb[1] + pa[1] #make pb absolute
+		pa = self.worldToWindowTransform(pa)
+		pb = self.worldToWindowTransform(pb) #transform
+		pb[0], pb[1] = pb[0] - pa[0], pb[1] - pa[1] #make pb rel. again
+		return pa + pb
 
 	def findClosestMultiple(self, x, b):
 		return int(float(x)/float(b))*b
@@ -92,14 +95,15 @@ class View(object):
 		self.updateView()
 		print "new pos", self.x, self.y
 
-	def drawTileAt(self, ren, x, y):		
-		ren.copy(self.background, dstrect = (x, y, 
-			self.bgTileWidth, self.bgTileHeight))
+	def drawTileAt(self, ren, dst):		
+		ren.copy(self.background, dstrect = dst)
 	
 
 	def render(self, ren):
 		for x, y in self.tilesInView:
-			x, y = self.worldToWindowTransform([x, y])
-			self.drawTileAt(ren, int(x), int(y))
+			dst = self.worldToWindowTransformRect([x, y,
+				self.bgTileWidth, self.bgTileHeight])
+			dst = list(map(lambda x: int(x), dst))
+			self.drawTileAt(ren, dst)
 
 		
