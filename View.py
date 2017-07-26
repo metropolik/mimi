@@ -37,8 +37,8 @@ class View(object):
 		print "zoomFactor", self.zoomFactor, "width", self.width, "height", self.height
 		self.width = self.win_width * (1.0/self.zoomFactor)
 		self.height = self.win_height * (1.0/self.zoomFactor)
-		self.viewMatrix = [[self.zoomFactor, 0.0, -self.x],
-							[0.0, self.zoomFactor, -self.y],
+		self.viewMatrix = [[self.zoomFactor, 0.0, -self.x * self.zoomFactor],
+							[0.0, self.zoomFactor, -self.y * self.zoomFactor],
 							[0.0, 0.0, 1.0]]
 
 	def worldToWindowTransform(self, point):		
@@ -55,21 +55,16 @@ class View(object):
 		return pa + pb
 
 	def findClosestMultiple(self, x, b):
-		return int(float(x)/float(b))*b
+		return (x//b)*b
 
 	def calcTilesInView(self):
 		del self.tilesInView[:]
-		#calc upper left corner that is in view
+		#calc upper left corner that is in just out of view
 		xul = self.findClosestMultiple(self.x, 
-			self.bgTileWidth)
-		xul = xul if xul >= self.x else xul + self.bgTileWidth
+			self.bgTileWidth)		
 		yul = self.findClosestMultiple(self.y, 
 			self.bgTileHeight)
-		yul = yul if yul >= self.y else yul + self.bgTileHeight
-
-		#instead use upper left corner that is not in view
-		xul -= self.bgTileWidth
-		yul -= self.bgTileHeight
+	
 		
 		#add all other corners that are in view
 		cx = xul
@@ -83,6 +78,7 @@ class View(object):
 			cx += self.bgTileWidth
 			cy = yul
 			it += 1
+		print "xul", xul, "yul", yul
 		print "tiles to render: ", len(self.tilesInView)
 
 	@property
