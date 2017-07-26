@@ -23,7 +23,7 @@ class View(object):
 		if self.background is None:
 			raise Exception("Could not convert to texture")
 
-		self.tilesInView = set()
+		self.tilesInView = list()
 		self.zoomFactor = 1.0
 		self.x, self.y = 0, 0 #causes updateView			
 
@@ -37,6 +37,7 @@ class View(object):
 							[0.0, 0.0, 1.0]]
 
 	def worldToWindowTransform(self, point):
+		#point = list(point) if type(point) is tuple else point
 		return dot(self.viewMatrix, point + [1.0]).tolist()[:-1]
 
 	def worldToWindowTransformRect(self, rect):
@@ -48,7 +49,7 @@ class View(object):
 		return int(float(x)/float(b))*b
 
 	def calcTilesInView(self):
-		self.tilesInView.clear()
+		del self.tilesInView[:]
 		#calc upper left corner that is in view
 		xul = self.findClosestMultiple(self.x, self.bgTileWidth)
 		xul = xul if xul >= self.x else xul + self.bgTileWidth
@@ -65,8 +66,8 @@ class View(object):
 		it = 0
 		while self.x + self.width > cx:
 			while self.y + self.height > cy:
-				corner = (cx, cy)
-				self.tilesInView.add(corner)			
+				corner = [cx, cy]
+				self.tilesInView.append(corner)			
 				cy += self.bgTileHeight
 			cx += self.bgTileWidth
 			cy = yul
@@ -98,6 +99,7 @@ class View(object):
 
 	def render(self, ren):
 		for x, y in self.tilesInView:
-			self.drawTileAt(ren, x-self.x, y - self.y)
+			x, y = self.worldToWindowTransform([x, y])
+			self.drawTileAt(ren, int(x), int(y))
 
 		
