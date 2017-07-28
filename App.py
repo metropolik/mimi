@@ -4,6 +4,8 @@ from sdl2.rect import SDL_Rect
 from sdl2.timer import SDL_Delay, SDL_GetTicks
 from View import View
 
+from Entity import Entity
+
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 800
 
@@ -27,6 +29,10 @@ class App(object):
 		self.maxFPS = 60		
 		self.middleMouseDown = False
 
+		self.renderObj.append(Entity(self.ren, 
+			self.view.worldToWindowTransformRect,
+			'shoulders.png'))
+
 
 	@property
 	def maxFPS(self):		
@@ -41,6 +47,7 @@ class App(object):
 	def initResources(self):
 		self.blue = sdl2.ext.Color(50, 150, 250)
 		self.pink = sdl2.ext.Color(255, 0, 255)
+		self.bgGrey = sdl2.ext.Color(57, 57, 57)
 		self.rects = ((0, 0, 32, 32))
 
 	def waitFPS(self):
@@ -79,7 +86,8 @@ class App(object):
 				self.view.zoomFactor += motion		
 
 	def handleRendering(self):
-		self.ren.clear(color = self.pink)
+		#self.ren.clear(color = self.pink) #for debugging
+		self.ren.clear(color = self.bgGrey) #to fill 1pixel gaps
 		for ro in self.renderObj:
 			ro.render(self.ren)		
 		self.ren.present()

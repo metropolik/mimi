@@ -1,6 +1,6 @@
 from sdl2.ext import load_image
 from sdl2 import (render, surface)
-from sdl2 import SDL_Texture
+from sdl2 import SDL_Texture, SDL_FreeSurface
 from numpy import dot
 
 
@@ -22,6 +22,7 @@ class View(object):
 		self.bgTileHeight = backgroundSurf.h
 		self.background = render.SDL_CreateTextureFromSurface(
 			ren.sdlrenderer, backgroundSurf).contents
+		SDL_FreeSurface(backgroundSurf)
 		if self.background is None:
 			raise Exception("Could not convert to texture")
 
