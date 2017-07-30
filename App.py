@@ -3,6 +3,7 @@ from sdl2 import *
 from sdl2.rect import SDL_Rect
 from sdl2.timer import SDL_Delay, SDL_GetTicks
 from View import View
+from EntityManager import EntityManager
 
 from Entity import Entity
 
@@ -24,12 +25,14 @@ class App(object):
 		self.renderObj = []
 		self.view = View(self.ren, WINDOW_WIDTH, WINDOW_HEIGHT)
 		self.renderObj.append(self.view)
+		self.entityManager = EntityManager(self.view)
+		self.renderObj.append(self.entityManager)
 		self.initResources()
 		self.timeLastFrame = SDL_GetTicks()
 		self.maxFPS = 60		
 		self.middleMouseDown = False
 
-		self.renderObj.append(Entity(self.ren, 
+		self.entityManager.insertEntity(Entity(self.ren, 
 			self.view.worldToWindowTransformRect,
 			'shoulders.png'))
 
