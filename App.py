@@ -17,11 +17,11 @@ class App(object):
 		self.running = True
 
 		sdl2.ext.init()
-		self.win = sdl2.ext.Window("Lolololol", 
+		self.win = sdl2.ext.Window("Lolololol",
 			size=(WINDOW_WIDTH, WINDOW_HEIGHT),
 			flags=(SDL_WINDOW_RESIZABLE))
 		self.win.show()
-		self.ren = sdl2.ext.Renderer(self.win)		
+		self.ren = sdl2.ext.Renderer(self.win)
 		self.renderObj = []
 		self.view = View(self.ren, WINDOW_WIDTH, WINDOW_HEIGHT)
 		self.renderObj.append(self.view)
@@ -32,7 +32,7 @@ class App(object):
 		self.maxFPS = 60
 		self.middleMouseDown = False
 
-		self.entityManager.insertEntity(Entity(self.ren, 
+		self.entityManager.insertEntity(Entity(self.ren,
 			self.view.worldToWindowTransformRect,
 			'shoulders.png'))
 
@@ -41,11 +41,11 @@ class App(object):
 
 
 	@property
-	def maxFPS(self):		
+	def maxFPS(self):
 		return self._maxFPS
 
 	@maxFPS.setter
-	def maxFPS(self, val):		
+	def maxFPS(self, val):
 		self._maxFPS = val
 		#turn into ms instead of sec
 		self._timePerFrame = (1.0/self._maxFPS) * 1000
@@ -74,42 +74,42 @@ class App(object):
 			elif event.type == SDL_MOUSEMOTION:
 				self.currentMousePos = (event.motion.x, event.motion.y)
 				if self.middleMouseDown:
-					newMousePos = self.currentMousePos				
+					newMousePos = self.currentMousePos
 					self.view.x += (self.oldMousePos[0] - newMousePos[0]) / self.view.zoomFactor
 					self.view.y += (self.oldMousePos[1] - newMousePos[1]) / self.view.zoomFactor
 					self.oldMousePos = newMousePos
 
-			elif event.type == SDL_MOUSEBUTTONDOWN:				
+			elif event.type == SDL_MOUSEBUTTONDOWN:
 				if event.button.button == SDL_BUTTON_MIDDLE:
-					self.oldMousePos = (event.button.x, event.button.y)				
+					self.oldMousePos = (event.button.x, event.button.y)
 					self.middleMouseDown = True
 
-			elif event.type == SDL_MOUSEBUTTONUP:				
-				if event.button.button == SDL_BUTTON_MIDDLE:				
+			elif event.type == SDL_MOUSEBUTTONUP:
+				if event.button.button == SDL_BUTTON_MIDDLE:
 					self.middleMouseDown = False
 
-			elif event.type == SDL_MOUSEWHEEL:							
+			elif event.type == SDL_MOUSEWHEEL:
 				motion = event.wheel.y * 0.025
 				# self.view.x += (-self.currentMousePos[0] * self.view.zoomFactor + self.currentMousePos[0])/self.view.zoomFactor
 				# self.view._y += (-self.currentMousePos[1] * self.view.zoomFactor + self.currentMousePos[1])/self.view.zoomFactor
 				newZoomFactor = self.view.zoomFactor + motion
 				if newZoomFactor < 2 and newZoomFactor > 0.4:
-					self.view.zoomFactor += motion		
+					self.view.zoomFactor += motion
 
 	def handleRendering(self):
 		#self.ren.clear(color = self.pink) #for debugging
 		self.ren.clear(color = self.bgGrey) #to fill 1pixel gaps
 		for ro in self.renderObj:
-			ro.render(self.ren)		
+			ro.render(self.ren)
 		self.ren.present()
 
 	def run(self):
-		while self.running:			
+		while self.running:
 			self.handleInput()
 			self.handleRendering()
 			self.waitFPS()
 
-	def __del__(self):		
+	def __del__(self):
 		sdl2.ext.quit()
 
 

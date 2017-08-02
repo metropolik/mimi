@@ -7,11 +7,11 @@ from numpy import dot
 class View(object):
 	"""docstring for View"""
 	def __init__(self, ren, win_width, win_height):
-		super(View, self).__init__()		
+		super(View, self).__init__()
 		self.width = win_width
 		self.height = win_height
 		self.win_width = win_width
-		self.win_height = win_height		
+		self.win_height = win_height
 
 		self.elementsInView = []
 
@@ -46,9 +46,9 @@ class View(object):
 		self.height = self.win_height * (1.0/self.zoomFactor)
 		self.viewMatrix = [[self.zoomFactor, 0.0, -self.x * self.zoomFactor - self.zoomFocusPt[0] * self.zoomFactor + self.zoomFocusPt[0]],
 							[0.0, self.zoomFactor, -self.y * self.zoomFactor - self.zoomFocusPt[1] * self.zoomFactor + self.zoomFocusPt[1]],
-							[0.0, 0.0, 1.0]]		
+							[0.0, 0.0, 1.0]]
 
-	def worldToWindowTransform(self, point):		
+	def worldToWindowTransform(self, point):
 		return dot(self.viewMatrix, point + [1.0]).tolist()[:-1]
 
 	def worldToWindowTransformRect(self, rect):
@@ -67,22 +67,22 @@ class View(object):
 	def calcTilesInView(self):
 		del self.tilesInView[:]
 		#calc upper left corner that is in just out of view
-		xul = self.findClosestMultiple(self.x, 
-			self.bgTileWidth)		
-		yul = self.findClosestMultiple(self.y, 
+		xul = self.findClosestMultiple(self.x,
+			self.bgTileWidth)
+		yul = self.findClosestMultiple(self.y,
 			self.bgTileHeight)
-	
-		
+
+
 		#add all other corners that are in view
 		cx = xul
-		cy = yul		
+		cy = yul
 		while self.x + self.width > cx:
 			while self.y + self.height > cy:
 				corner = [cx, cy]
-				self.tilesInView.append(corner)			
+				self.tilesInView.append(corner)
 				cy += self.bgTileHeight
 			cx += self.bgTileWidth
-			cy = yul				
+			cy = yul
 		print "tiles to render: ", len(self.tilesInView)
 
 	@property
@@ -99,11 +99,11 @@ class View(object):
 	def x(self):
 		return self._x
 
-	@property 
+	@property
 	def y(self):
 		return self._y
 
-	#only y causes update 
+	#only y causes update
 	#since x and y are always set together
 	@x.setter
 	def x(self, val): #hopefully
@@ -115,9 +115,9 @@ class View(object):
 		self.updateView()
 		print "new pos", self.x, self.y
 
-	def drawTileAt(self, ren, dst):		
+	def drawTileAt(self, ren, dst):
 		ren.copy(self.background, dstrect = dst)
-	
+
 
 	def render(self, ren):
 		for x, y in self.tilesInView:
@@ -126,4 +126,4 @@ class View(object):
 			dst = list(map(lambda x: int(round(x, 0)), dst))
 			self.drawTileAt(ren, dst)
 
-		
+

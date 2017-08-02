@@ -4,8 +4,8 @@ class EntityManager(object):
 	def __init__(self, view):
 		super(EntityManager, self).__init__()
 		self.view = view
-		self.TILESIZE = 256		
-		self.oldView = (self.view.x, self.view.y, 
+		self.TILESIZE = 256
+		self.oldView = (self.view.x, self.view.y,
 			self.view.width, self.view.height)
 
 		#saves for each entity in which bucket it is
@@ -15,7 +15,7 @@ class EntityManager(object):
 		#1 Bucket = 1 Tile
 		self._entityBuckets = {}
 
-		self._inViewEntities = set()		
+		self._inViewEntities = set()
 
 	def insertEntity(self, entity):
 		"""	Assumes the entity is no larger than 4 tiles
@@ -27,7 +27,7 @@ class EntityManager(object):
 		for corner in ((entity.x, entity.y), #upper left
 			(entity.x + entity.width, entity.y), #upper right
 			(entity.x, entity.y + entity.height), #lower left
-			(entity.x + entity.width, 
+			(entity.x + entity.width,
 				entity.y + entity.height)):
 
 			#get tile
@@ -38,8 +38,8 @@ class EntityManager(object):
 			if not corner in self._entityBuckets:
 				self._entityBuckets[corner] = set()
 
-			#add to bucket (because set, no duplicates)			
-			self._entityBuckets[corner].add(entity)			
+			#add to bucket (because set, no duplicates)
+			self._entityBuckets[corner].add(entity)
 			#add bucket to bucketEntity
 			self._bucketEntity.append(
 				self._entityBuckets[corner])
@@ -52,7 +52,7 @@ class EntityManager(object):
 			return
 		for bucket in self._bucketEntity[entity]:
 			bucket.remove(entity)
-		if destroyBucketEntity:			
+		if destroyBucketEntity:
 			del self._bucketEntity[entity]
 
 
@@ -73,9 +73,9 @@ class EntityManager(object):
 
 		self._inViewEntities.clear()
 		#calc upper left corner that is just out of view
-		xul, yul = self.findTile((self.view.x, self.view.y), 
-			self.TILESIZE)	
-		
+		xul, yul = self.findTile((self.view.x, self.view.y),
+			self.TILESIZE)
+
 		#add all other corners that are in view
 		cx = xul
 		cy = yul
@@ -90,11 +90,11 @@ class EntityManager(object):
 							self._entityBuckets[corner])
 				cy += self.TILESIZE
 			cx += self.TILESIZE
-			cy = yul				
+			cy = yul
 		print "entities to render: ", len(self._inViewEntities)
 
 	def render(self, ren):
-		currentView = (self.view.x, self.view.y, 
+		currentView = (self.view.x, self.view.y,
 			self.view.width, self.view.height)
 		if currentView != self.oldView:
 			self.updateEntitesInView()

@@ -10,7 +10,7 @@ class Entity(object):
 		self.y = 0
 		self.loadImage(ren, imgPath)
 		self.transform = transform
-		
+
 
 	def loadImage(self, ren, path):
 		entitySurf = load_image(path)
@@ -25,8 +25,8 @@ class Entity(object):
 			raise Exception("Could not convert to texture")
 
 	def render(self, ren):
-		dst = self.transform([self.x, self.y, 
+		dst = self.transform([self.x, self.y,
 			self.width, self.height])
 		dst = list(map(lambda x: int(round(x, 0)), dst))
 		ren.copy(self.texture, dstrect = dst)
-		
+
