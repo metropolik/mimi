@@ -5,6 +5,7 @@ from sdl2.timer import SDL_Delay, SDL_GetTicks
 from View import View
 from EntityManager import EntityManager
 from Entity import Entity
+from Console import Console
 
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 800
@@ -28,12 +29,15 @@ class App(object):
 		self.renderObj.append(self.entityManager)
 		self.initResources()
 		self.timeLastFrame = SDL_GetTicks()
-		self.maxFPS = 60		
+		self.maxFPS = 60
 		self.middleMouseDown = False
 
 		self.entityManager.insertEntity(Entity(self.ren, 
 			self.view.worldToWindowTransformRect,
 			'shoulders.png'))
+
+		self.console = Console(self.ren)
+		self.renderObj.append(self.console)
 
 
 	@property
