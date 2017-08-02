@@ -4,7 +4,6 @@ from sdl2.rect import SDL_Rect
 from sdl2.timer import SDL_Delay, SDL_GetTicks
 from View import View
 from EntityManager import EntityManager
-
 from Entity import Entity
 
 WINDOW_WIDTH = 1200
@@ -69,10 +68,11 @@ class App(object):
 				self.running = False
 				break
 			elif event.type == SDL_MOUSEMOTION:
+				self.currentMousePos = (event.motion.x, event.motion.y)
 				if self.middleMouseDown:
-					newMousePos = (event.motion.x, event.motion.y)
-					self.view.x += self.oldMousePos[0] - newMousePos[0]
-					self.view.y += self.oldMousePos[1] - newMousePos[1]
+					newMousePos = self.currentMousePos				
+					self.view.x += (self.oldMousePos[0] - newMousePos[0]) / self.view.zoomFactor
+					self.view.y += (self.oldMousePos[1] - newMousePos[1]) / self.view.zoomFactor
 					self.oldMousePos = newMousePos
 
 			elif event.type == SDL_MOUSEBUTTONDOWN:				
@@ -81,12 +81,16 @@ class App(object):
 					self.middleMouseDown = True
 
 			elif event.type == SDL_MOUSEBUTTONUP:				
-				if event.button.button == SDL_BUTTON_MIDDLE:					
+				if event.button.button == SDL_BUTTON_MIDDLE:				
 					self.middleMouseDown = False
 
-			elif event.type == SDL_MOUSEWHEEL:
+			elif event.type == SDL_MOUSEWHEEL:							
 				motion = event.wheel.y * 0.025
-				self.view.zoomFactor += motion		
+				# self.view.x += (-self.currentMousePos[0] * self.view.zoomFactor + self.currentMousePos[0])/self.view.zoomFactor
+				# self.view._y += (-self.currentMousePos[1] * self.view.zoomFactor + self.currentMousePos[1])/self.view.zoomFactor
+				newZoomFactor = self.view.zoomFactor + motion
+				if newZoomFactor < 2 and newZoomFactor > 0.4:
+					self.view.zoomFactor += motion		
 
 	def handleRendering(self):
 		#self.ren.clear(color = self.pink) #for debugging

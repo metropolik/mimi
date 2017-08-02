@@ -18,7 +18,7 @@ class EntityManager(object):
 		self._inViewEntities = set()		
 
 	def insertEntity(self, entity):
-		"""	Assumes the entity is not larger than 4 tiles
+		"""	Assumes the entity is no larger than 4 tiles
 			adds the 4 corners into the entityBuckets """
 
 		if not entity in self._bucketEntity:
@@ -74,7 +74,7 @@ class EntityManager(object):
 		self._inViewEntities.clear()
 		#calc upper left corner that is just out of view
 		xul, yul = self.findTile((self.view.x, self.view.y), 
-			self.TILESIZE)		
+			self.TILESIZE)	
 		
 		#add all other corners that are in view
 		cx = xul

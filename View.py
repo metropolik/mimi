@@ -11,7 +11,7 @@ class View(object):
 		self.width = win_width
 		self.height = win_height
 		self.win_width = win_width
-		self.win_height = win_height
+		self.win_height = win_height		
 
 		self.elementsInView = []
 
@@ -28,7 +28,7 @@ class View(object):
 
 		self.tilesInView = list()
 		self.zoomFactor = 1.0
-		self.x, self.y = 0, 0 #causes updateView			
+		self.x, self.y = 0, 0 #causes updateView
 
 	def updateView(self):
 		self.calcViewMatrix()
@@ -40,6 +40,13 @@ class View(object):
 		self.viewMatrix = [[self.zoomFactor, 0.0, -self.x * self.zoomFactor],
 							[0.0, self.zoomFactor, -self.y * self.zoomFactor],
 							[0.0, 0.0, 1.0]]
+
+	def calcViewMatrixP(self):
+		self.width = self.win_width * (1.0/self.zoomFactor)
+		self.height = self.win_height * (1.0/self.zoomFactor)
+		self.viewMatrix = [[self.zoomFactor, 0.0, -self.x * self.zoomFactor - self.zoomFocusPt[0] * self.zoomFactor + self.zoomFocusPt[0]],
+							[0.0, self.zoomFactor, -self.y * self.zoomFactor - self.zoomFocusPt[1] * self.zoomFactor + self.zoomFocusPt[1]],
+							[0.0, 0.0, 1.0]]		
 
 	def worldToWindowTransform(self, point):		
 		return dot(self.viewMatrix, point + [1.0]).tolist()[:-1]
