@@ -94,7 +94,15 @@ class App(object):
 				# self.view._y += (-self.currentMousePos[1] * self.view.zoomFactor + self.currentMousePos[1])/self.view.zoomFactor
 				newZoomFactor = self.view.zoomFactor + motion
 				if newZoomFactor < 2 and newZoomFactor > 0.4:
+					preZF = self.view.zoomFactor
 					self.view.zoomFactor += motion
+					diffZF = preZF - self.view.zoomFactor
+					a = (WINDOW_WIDTH/2.0)
+					b = (WINDOW_HEIGHT/2.0)
+					zoomOffsetw =  (-a * diffZF) / (self.view.zoomFactor * preZF)
+					zoomOffseth =  (-b * diffZF) / (self.view.zoomFactor * preZF)
+					self.view.x += zoomOffsetw
+					self.view.y += zoomOffseth
 
 	def handleRendering(self):
 		#self.ren.clear(color = self.pink) #for debugging
