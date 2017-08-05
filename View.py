@@ -27,6 +27,7 @@ class View(object):
 			raise Exception("Could not convert to texture")
 
 		self.tilesInView = list()
+		self._x, self._y = 0, 0
 		self.zoomFactor = 1.0
 		self.x, self.y = 0, 0 #causes updateView
 
@@ -39,13 +40,6 @@ class View(object):
 		self.height = self.win_height * (1.0/self.zoomFactor)
 		self.viewMatrix = [[self.zoomFactor, 0.0, -self.x * self.zoomFactor],
 							[0.0, self.zoomFactor, -self.y * self.zoomFactor],
-							[0.0, 0.0, 1.0]]
-
-	def calcViewMatrixP(self):
-		self.width = self.win_width * (1.0/self.zoomFactor)
-		self.height = self.win_height * (1.0/self.zoomFactor)
-		self.viewMatrix = [[self.zoomFactor, 0.0, -self.x * self.zoomFactor - self.zoomFocusPt[0] * self.zoomFactor + self.zoomFocusPt[0]],
-							[0.0, self.zoomFactor, -self.y * self.zoomFactor - self.zoomFocusPt[1] * self.zoomFactor + self.zoomFocusPt[1]],
 							[0.0, 0.0, 1.0]]
 
 	def worldToWindowTransform(self, point):
@@ -92,8 +86,7 @@ class View(object):
 	@zoomFactor.setter
 	def zoomFactor(self, val):
 		self._zoomFactor = val
-		if hasattr(self, "x"):
-			self.updateView()
+		self.updateView()
 
 	@property
 	def x(self):
@@ -103,11 +96,11 @@ class View(object):
 	def y(self):
 		return self._y
 
-	#only y causes update
-	#since x and y are always set together
 	@x.setter
-	def x(self, val): #hopefully
+	def x(self, val):
 		self._x = val
+		self.updateView()
+		print "new pos", self.x, self.y
 
 	@y.setter
 	def y(self, val):

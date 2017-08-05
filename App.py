@@ -89,7 +89,7 @@ class App(object):
 					self.middleMouseDown = False
 
 			elif event.type == SDL_MOUSEWHEEL:
-				motion = event.wheel.y * 0.025 * self.view.zoomFactor
+				motion = event.wheel.y * 0.07 * self.view.zoomFactor
 				newZoomFactor = self.view.zoomFactor + motion
 				if newZoomFactor < 2 and newZoomFactor > 0.4:
 					preZF = self.view.zoomFactor
