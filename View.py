@@ -3,7 +3,6 @@ from sdl2 import (render, surface)
 from sdl2 import SDL_Texture, SDL_FreeSurface
 from numpy import dot
 
-
 class View(object):
 	"""docstring for View"""
 	def __init__(self, ren, win_width, win_height):
@@ -66,7 +65,6 @@ class View(object):
 		yul = self.findClosestMultiple(self.y,
 			self.bgTileHeight)
 
-
 		#add all other corners that are in view
 		cx = xul
 		cy = yul
@@ -111,12 +109,9 @@ class View(object):
 	def drawTileAt(self, ren, dst):
 		ren.copy(self.background, dstrect = dst)
 
-
 	def render(self, ren):
 		for x, y in self.tilesInView:
 			dst = self.worldToWindowTransformRect([x, y,
 				self.bgTileWidth, self.bgTileHeight])
 			dst = list(map(lambda x: int(round(x, 0)), dst))
 			self.drawTileAt(ren, dst)
-
-

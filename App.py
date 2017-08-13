@@ -91,7 +91,7 @@ class App(object):
 			elif event.type == SDL_MOUSEWHEEL:
 				motion = event.wheel.y * 0.07 * self.view.zoomFactor
 				newZoomFactor = self.view.zoomFactor + motion
-				if newZoomFactor < 2 and newZoomFactor > 0.4:
+				if newZoomFactor < 2 and newZoomFactor > 0.2:
 					preZF = self.view.zoomFactor
 					self.view.zoomFactor += motion
 					diffZF = preZF - self.view.zoomFactor
