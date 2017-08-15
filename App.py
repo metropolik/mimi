@@ -117,5 +117,3 @@ class App(object):
 
 	def __del__(self):
 		sdl2.ext.quit()
-
-

@@ -46,11 +46,12 @@ class View(object):
 
 	def worldToWindowTransformRect(self, rect):
 		pa, pb = rect[:2], rect[2:] #pb is width and height
-		#make pb absolute
+		#make pb (width, height) absolute
 		pb[0], pb[1] = pb[0] + pa[0], pb[1] + pa[1]
+		#transform
 		pa = self.worldToWindowTransform(pa)
-		pb = self.worldToWindowTransform(pb) #transform
-		#make pb rel. again
+		pb = self.worldToWindowTransform(pb)
+		#make pb relative again
 		pb[0], pb[1] = pb[0] - pa[0], pb[1] - pa[1]
 		return pa + pb
 
