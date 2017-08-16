@@ -2,11 +2,13 @@ from sdl2.ext import load_image
 from sdl2 import (render, surface)
 from sdl2 import SDL_Texture, SDL_FreeSurface
 from numpy import dot
+from DebugStatsViewer import DebugStatsViewer
 
 class View(object):
 	"""docstring for View"""
 	def __init__(self, ren, win_width, win_height):
 		super(View, self).__init__()
+		self.debugStatsViewer = DebugStatsViewer()
 		self.width = win_width
 		self.height = win_height
 		self.win_width = win_width
@@ -76,7 +78,8 @@ class View(object):
 				cy += self.bgTileHeight
 			cx += self.bgTileWidth
 			cy = yul
-		print "tiles to render: ", len(self.tilesInView)
+		#print "tiles to render: ", len(self.tilesInView)
+		self.debugStatsViewer.tilesToRenderCount = len(self.tilesInView)
 
 	@property
 	def zoomFactor(self):
@@ -98,14 +101,16 @@ class View(object):
 	@x.setter
 	def x(self, val):
 		self._x = val
-		self.updateView()
-		print "new pos", self.x, self.y
+		#self.updateView()
+		#print "new pos", self.x, self.y
+		#self.debugStatsViewer.pos = (self.x, self.y)
 
 	@y.setter
 	def y(self, val):
 		self._y = val
 		self.updateView()
-		print "new pos", self.x, self.y
+		#print "new pos", self.x, self.y
+		self.debugStatsViewer.pos = (round(self.x, 2), round(self.y, 2))
 
 	def drawTileAt(self, ren, dst):
 		ren.copy(self.background, dstrect = dst)

@@ -1,13 +1,12 @@
 from sdl2 import sdlttf, SDL_Color, render, SDL_FreeSurface, SDL_TEXTUREACCESS_TARGET, SDL_CreateTexture, SDL_PIXELFORMAT_RGBA8888, SDL_SetTextureBlendMode, SDL_BLENDMODE_BLEND
 
 class TextRenderer(object):
-	"""docstring for TextRenderer"""
+	"""TextRenderer sdlttf must initialized already"""
 	def __init__(self, ren):
 		super(TextRenderer, self).__init__()
 		self.ren = ren
 
 		self.fontColor = SDL_Color(255, 255, 255)
-		sdlttf.TTF_Init()
 		self.font = sdlttf.TTF_OpenFont("/usr/share/fonts/truetype/freefont/FreeSans.ttf", 18)
 		self.glyphTextures = {}
 		self.charSpacing = 0 #in pixel
@@ -17,7 +16,7 @@ class TextRenderer(object):
 		glyphSurface = sdlttf.TTF_RenderGlyph_Blended(self.font, ord(glyph), self.fontColor)
 		clipRect = glyphSurface.contents.clip_rect
 		clipRect = [getattr(clipRect, a) for a in ["x", "y", "w", "h"]]
-		print "clipRect", clipRect
+		#print "clipRect", clipRect
 		texture = render.SDL_CreateTextureFromSurface(self.ren.sdlrenderer, glyphSurface).contents
 		SDL_FreeSurface(glyphSurface)
 		self.glyphTextures[glyph] = (texture, clipRect)
@@ -30,7 +29,7 @@ class TextRenderer(object):
 		rWidth = 0
 		for i, char in enumerate(text):
 			if char not in self.glyphTextures:
-				print "new char", char, ord(char)
+				#print "new char", char, ord(char)
 				self.addNewGlyph(char)
 
 			glyphHeight = self.glyphTextures[char][1][3]

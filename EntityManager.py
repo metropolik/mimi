@@ -1,3 +1,5 @@
+from Console import Console
+from DebugStatsViewer import DebugStatsViewer
 
 class EntityManager(object):
 	"""docstring for EntityManager"""
@@ -16,6 +18,8 @@ class EntityManager(object):
 		self._entityBuckets = {}
 
 		self._inViewEntities = set()
+
+		self.debugStatsViewer = DebugStatsViewer()
 
 	def insertEntity(self, entity):
 		"""	Assumes the entity is no larger than 4 tiles
@@ -91,7 +95,8 @@ class EntityManager(object):
 				cy += self.TILESIZE
 			cx += self.TILESIZE
 			cy = yul
-		print "entities to render: ", len(self._inViewEntities)
+		#print "entities to render: ", len(self._inViewEntities)
+		self.debugStatsViewer.entitiesToRenderCount = len(self._inViewEntities)
 
 	def render(self, ren):
 		currentView = (self.view.x, self.view.y,

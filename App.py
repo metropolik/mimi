@@ -6,6 +6,9 @@ from View import View
 from EntityManager import EntityManager
 from Entity import Entity
 from Console import Console
+from time import time
+from sdl2 import sdlttf
+from DebugStatsViewer import DebugStatsViewer
 
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 800
@@ -17,28 +20,38 @@ class App(object):
 		self.running = True
 
 		sdl2.ext.init()
+		sdlttf.TTF_Init()
 		self.win = sdl2.ext.Window("Lolololol",
 			size=(WINDOW_WIDTH, WINDOW_HEIGHT),
 			flags=(SDL_WINDOW_RESIZABLE))
 		self.win.show()
 		self.ren = sdl2.ext.Renderer(self.win)
 		self.renderObj = []
+
+		#needs to be initialized before everything that uses it
+		self.debugStatsViewer = DebugStatsViewer(self.ren)
+
 		self.view = View(self.ren, WINDOW_WIDTH, WINDOW_HEIGHT)
 		self.renderObj.append(self.view)
+
+		self.renderObj.append(self.debugStatsViewer)
+
 		self.entityManager = EntityManager(self.view)
 		self.renderObj.append(self.entityManager)
+
 		self.initResources()
 		self.timeLastFrame = SDL_GetTicks()
 		self.maxFPS = 60
+		self.fpsCounter = 0
+		self.fpsWatchStartTime = time()
 		self.middleMouseDown = False
 
 		self.entityManager.insertEntity(Entity(self.ren,
 			self.view.worldToWindowTransformRect,
 			'shoulders.png'))
 
-		self.console = Console(self.ren)
-		self.renderObj.append(self.console)
-
+		# self.console = Console(self.ren)
+		# self.renderObj.append(self.console)
 
 	@property
 	def maxFPS(self):
@@ -57,6 +70,12 @@ class App(object):
 		self.rects = ((0, 0, 32, 32))
 
 	def waitFPS(self):
+		if time() - self.fpsWatchStartTime >= 1.0: #one second passed
+			self.debugStatsViewer.cFps = self.fpsCounter
+			self.fpsCounter = 0
+			self.fpsWatchStartTime = time()
+		self.fpsCounter += 1
+
 		currentTime = SDL_GetTicks()
 		passedTime = currentTime - self.timeLastFrame
 		waitTime = round(self._timePerFrame - passedTime, 0)

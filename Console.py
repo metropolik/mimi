@@ -2,13 +2,13 @@ from sdl2 import sdlttf, SDL_Color, render, SDL_FreeSurface, SDL_DestroyTexture
 from TextRenderer import TextRenderer
 
 class Console(object):
-	"""docstring for Console"""
+	"""Console"""
 	def __init__(self, ren):
 		super(Console, self).__init__()
+
 		self.ren = ren
 		self.textRenderer = TextRenderer(self.ren)
 		self.fontColor = SDL_Color(255, 255, 255)
-		sdlttf.TTF_Init()
 		self.font = sdlttf.TTF_OpenFont("/usr/share/fonts/truetype/freefont/FreeSans.ttf", 14)
 		self.lines = ["hall o", "mallo", "10FPS"]
 
