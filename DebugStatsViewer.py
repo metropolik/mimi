@@ -11,6 +11,7 @@ class DebugStatsViewer(object):
 		super(DebugStatsViewer, self).__init__()
 
 		#being instanciated for the first time
+		#(borg calls init for each creation)
 		if not hasattr(self, "ren"):
 			self.ren = ren
 			self.textRenderer = TextRenderer(self.ren)

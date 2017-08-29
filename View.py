@@ -2,6 +2,7 @@ from sdl2.ext import load_image
 from sdl2 import (render, surface)
 from sdl2 import SDL_Texture, SDL_FreeSurface
 from numpy import dot
+from numpy.linalg import inv as inverseMat
 from DebugStatsViewer import DebugStatsViewer
 
 class View(object):
@@ -31,6 +32,7 @@ class View(object):
 		self._x, self._y = 0, 0
 		self.zoomFactor = 1.0
 		self.x, self.y = 0, 0 #causes updateView
+		self._viewChanged = False #soley used for the inverse
 
 	def updateView(self):
 		self.calcViewMatrix()
@@ -42,6 +44,17 @@ class View(object):
 		self.viewMatrix = [[self.zoomFactor, 0.0, -self.x * self.zoomFactor],
 							[0.0, self.zoomFactor, -self.y * self.zoomFactor],
 							[0.0, 0.0, 1.0]]
+		self._viewChanged = True
+
+	@property
+	def inverseViewMatrix(self):
+		if self._viewChanged or not hasattr(self, "_invViewMat"):
+			self._invViewMat = inverseMat(self.viewMatrix)
+			self._viewChanged = False
+		return self._invViewMat
+
+	def windowToWorldTransform(self, point):
+		return dot(self._invViewMat, point + [1.0]).tolist()[:-1]
 
 	def worldToWindowTransform(self, point):
 		return dot(self.viewMatrix, point + [1.0]).tolist()[:-1]

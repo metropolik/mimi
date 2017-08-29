@@ -21,6 +21,12 @@ class EntityManager(object):
 
 		self.debugStatsViewer = DebugStatsViewer()
 
+	def nofifyMouseMoveEvent(self, pos):
+		print "mouseMoveEvent", pos
+
+	def notifyLeftMouseEvent(self, buttonDown):
+		print "leftMouseEvent", buttonDown
+
 	def insertEntity(self, entity):
 		"""	Assumes the entity is no larger than 4 tiles
 			adds the 4 corners into the entityBuckets """

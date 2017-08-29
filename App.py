@@ -28,6 +28,9 @@ class App(object):
 		self.ren = sdl2.ext.Renderer(self.win)
 		self.renderObj = []
 
+		self.leftClickListeners = []
+		self.mouseMoveListeners = []
+
 		#needs to be initialized before everything that uses it
 		self.debugStatsViewer = DebugStatsViewer(self.ren)
 
@@ -49,6 +52,10 @@ class App(object):
 		self.entityManager.insertEntity(Entity(self.ren,
 			self.view.worldToWindowTransformRect,
 			'shoulders.png'))
+
+		#register listeners
+		self.mouseMoveListeners.append(self.entityManager)
+		self.leftClickListeners.append(self.entityManager)
 
 		# self.console = Console(self.ren)
 		# self.renderObj.append(self.console)
@@ -98,14 +105,24 @@ class App(object):
 					self.view.y += (self.oldMousePos[1] - newMousePos[1]) / self.view.zoomFactor
 					self.oldMousePos = newMousePos
 
+					#nofify listeners
+					for listener in self.mouseMoveListeners:
+						listener.nofifyMouseMoveEvent(pos=(event.motion.x, event.motion.y))
+
 			elif event.type == SDL_MOUSEBUTTONDOWN:
 				if event.button.button == SDL_BUTTON_MIDDLE:
 					self.oldMousePos = (event.button.x, event.button.y)
 					self.middleMouseDown = True
+				elif event.button.button == SDL_BUTTON_LEFT:
+					for listener in self.leftClickListeners:
+						listener.notifyLeftMouseEvent(buttonDown=True)
 
 			elif event.type == SDL_MOUSEBUTTONUP:
 				if event.button.button == SDL_BUTTON_MIDDLE:
 					self.middleMouseDown = False
+				elif event.button.button == SDL_BUTTON_LEFT:
+					for listener in self.leftClickListeners:
+						listener.notifyLeftMouseEvent(buttonDown=False)
 
 			elif event.type == SDL_MOUSEWHEEL:
 				motion = event.wheel.y * 0.07 * self.view.zoomFactor
