@@ -54,7 +54,9 @@ class View(object):
 		return self._invViewMat
 
 	def windowToWorldTransform(self, point):
-		return dot(self._invViewMat, point + [1.0]).tolist()[:-1]
+		if not isinstance(point, list):
+			point = list(point)
+		return dot(self.inverseViewMatrix, point + [1.0]).tolist()[:-1]
 
 	def worldToWindowTransform(self, point):
 		return dot(self.viewMatrix, point + [1.0]).tolist()[:-1]

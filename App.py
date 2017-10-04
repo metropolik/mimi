@@ -114,15 +114,21 @@ class App(object):
 					self.oldMousePos = (event.button.x, event.button.y)
 					self.middleMouseDown = True
 				elif event.button.button == SDL_BUTTON_LEFT:
+					pos = (event.button.x, event.button.y)
+					pos = self.view.windowToWorldTransform(pos)
 					for listener in self.leftClickListeners:
-						listener.notifyLeftMouseEvent(buttonDown=True)
+						listener.notifyLeftMouseEvent(buttonDown=True,
+							pos=pos)
 
 			elif event.type == SDL_MOUSEBUTTONUP:
 				if event.button.button == SDL_BUTTON_MIDDLE:
 					self.middleMouseDown = False
 				elif event.button.button == SDL_BUTTON_LEFT:
+					pos = (event.button.x, event.button.y)
+					pos = self.view.windowToWorldTransform(pos)
 					for listener in self.leftClickListeners:
-						listener.notifyLeftMouseEvent(buttonDown=False)
+						listener.notifyLeftMouseEvent(buttonDown=False,
+							pos=pos)
 
 			elif event.type == SDL_MOUSEWHEEL:
 				motion = event.wheel.y * 0.07 * self.view.zoomFactor
@@ -145,9 +151,13 @@ class App(object):
 			ro.render(self.ren)
 		self.ren.present()
 
+	def updateLogic(self):
+		pass
+
 	def run(self):
 		while self.running:
 			self.handleInput()
+			self.updateLogic()
 			self.handleRendering()
 			self.waitFPS()
 

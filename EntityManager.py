@@ -24,8 +24,8 @@ class EntityManager(object):
 	def nofifyMouseMoveEvent(self, pos):
 		print "mouseMoveEvent", pos
 
-	def notifyLeftMouseEvent(self, buttonDown):
-		print "leftMouseEvent", buttonDown
+	def notifyLeftMouseEvent(self, buttonDown, pos):
+		print "leftMouseEvent", buttonDown, pos
 
 	def insertEntity(self, entity):
 		"""	Assumes the entity is no larger than 4 tiles
